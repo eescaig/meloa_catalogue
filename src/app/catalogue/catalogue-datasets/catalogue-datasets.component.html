@@ -1,0 +1,60 @@
+<br>
+<table class="table table-bordered">
+    <thead class="mdb-color darken-3">
+        <th class="text-white">Datasets</th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let data of datasetList; let i = index">
+            <td *ngIf="i >= firstVisibleIndex && i <= lastVisibleIndex">
+                <a [routerLink]="[data]" (click)="goToDetail(data)"> {{data}} </a>
+            </td>
+        </tr>
+    </tbody>
+  </table>
+
+  <!--Bottom Table UI-->
+  <div class="d-flex justify-content-center">
+
+        <!--Pagination -->
+        <nav class="my-4 pt-2">
+          <ul class="pagination pagination-circle pg-purple mb-0">
+    
+            <!--First-->
+            <li class="page-item clearfix d-none d-md-block" (click)="firstPage()" [ngClass]="{disabled: activePage == 1}">
+              <a class="page-link">First</a>
+            </li>
+    
+            <!--Arrow left-->
+            <li class="page-item" (click)="previousPage($event)" [ngClass]="{disabled: activePage == 1}">
+              <a class="page-link" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+              </a>
+            </li>
+    
+            <!--Numbers-->
+            <li *ngFor="let page of paginators; let i = index" class="page-item" [ngClass]="{active: i+1 == activePage}">
+              <a class="page-link waves-light" (click)="changePage($event)" mdbWavesEffect>{{page}}</a>
+            </li>
+    
+    
+    
+            <!--Arrow right-->
+            <li class="page-item" (click)="nextPage($event)" [ngClass]="{disabled: activePage == 10}">
+              <a class="page-link" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+              </a>
+            </li>
+    
+            <!--Last-->
+            <li class="page-item clearfix d-none d-md-block" (click)="lastPage()" [ngClass]="{disabled: activePage == 10}">
+              <a class="page-link">Last</a>
+            </li>
+    
+          </ul>
+        </nav>
+        <!--/Pagination -->
+    
+      </div>
+      <!--Bottom Table UI-->

@@ -1,0 +1,43 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<div class="container">
+  <h1>
+    Welcome to {{ title }}!
+  </h1>
+  <!-- <div class="navLinks">
+      <a [routerLink]="['/dataset']">Catalogue</a>
+  </div> -->
+  <!--Navbar-->
+<mdb-navbar SideClass="navbar navbar-expand-lg navbar-dark indigo">
+
+    <!-- Navbar brand -->
+    <logo><a class="navbar-brand" [routerLink]="['']">MELOA</a></logo>
+
+    <!-- Collapsible content -->
+    <links>
+
+        <!-- Links -->
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link waves-light" mdbWavesEffect [routerLink]="['/dataset']">Catalogue</a>
+            </li>
+        </ul>
+        <!-- Links -->
+
+<!-- Search form -->
+        <!-- <form class="form-inline waves-light" mdbWavesEffect>
+            <div class="md-form mt-0">
+                <input class="form-control mr-sm-2" type="text" placeholder="Search">
+            </div>
+        </form> -->
+    </links>
+    <!-- Collapsible content -->
+
+</mdb-navbar>
+<!--/.Navbar-->
+
+</div>
+<div class="container">
+  <router-outlet></router-outlet>
+</div>
+
+
