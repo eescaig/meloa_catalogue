@@ -1,4 +1,69 @@
 <br>
+<!-- <div [formGroup]="filterForm">
+
+  <div *ngFor="let data of (page | async)?.result" [ngClass]="{'available': data.is_available, 'data': true}">
+    {{ data }}
+  </div>
+
+  <app-paginator [page]="page | async" (pageChange)="onPageChanged($event)"></app-paginator>
+</div> -->
+
+<div class="d-flex justify-content-center">
+    <div class="space-select">
+      <app-select [labelName] = "labelOrgs" [selectList] = "organizationList" [styleSelect]=""></app-select>
+    </div>
+
+    <div class="space-select">
+      <app-select [labelName] = "labelGroups" [selectList] = "groupList" [styleSelect]="styleSelect"></app-select>
+    </div>
+
+    <div class="space-select">
+      <app-select [labelName] = "labelTags" [selectList] = "tagList" [styleSelect]="styleSelect"></app-select>
+    </div>
+    
+    <!-- <div class="space-select">
+    <form [formGroup]="orgForm">
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <label class="input-group-text">Organization</label>
+        </div>
+        <select class="custom-select" formControlName="organizationControl">
+          <option >Choose...</option>
+          <option [value]="org" *ngFor="let org of organizationList">{{org | uppercase}}</option>
+        </select>
+      </div>
+    </form>
+   </div> -->
+   
+   <!-- <div class="space-select">
+    <form [formGroup]="groupForm">
+      <div class="input-group mb-3 ">
+        <div class="input-group-prepend">
+          <label class="input-group-text">Groups</label>
+        </div>
+        <select class="custom-select ancho" formControlName="groupControl">
+          <option selected>Choose...</option>
+          <option [value]="group" *ngFor="let group of groupList">{{group | uppercase | stringPipe}}</option>
+        </select>
+      </div>
+    </form>
+  </div>
+
+  <div class="space-select">
+    <form [formGroup]="tagForm">
+      <div class="input-group mb-3">
+        <div class="input-group-prepend">
+          <label class="input-group-text">Tags</label>
+        </div>
+        <select class="custom-select ancho" formControlName="tagControl">
+          <option selected>Choose...</option>
+          <option [value]="tag" *ngFor="let tag of tagList">{{tag | uppercase}}</option>
+        </select>
+      </div>
+    </form>
+  </div> -->
+</div>
+
 <table class="table table-bordered">
     <thead class="mdb-color darken-3">
         <th class="text-white">Datasets</th>
@@ -12,19 +77,16 @@
     </tbody>
   </table>
 
-  <!--Bottom Table UI-->
+  <!--Bottom Table UI Pagination-->
   <div class="d-flex justify-content-center">
 
-        <!--Pagination -->
         <nav class="my-4 pt-2">
           <ul class="pagination pagination-circle pg-purple mb-0">
     
-            <!--First-->
             <li class="page-item clearfix d-none d-md-block" (click)="firstPage()" [ngClass]="{disabled: activePage == 1}">
               <a class="page-link">First</a>
             </li>
     
-            <!--Arrow left-->
             <li class="page-item" (click)="previousPage($event)" [ngClass]="{disabled: activePage == 1}">
               <a class="page-link" aria-label="Previous">
                 <span aria-hidden="true">&laquo;</span>
@@ -32,29 +94,30 @@
               </a>
             </li>
     
-            <!--Numbers-->
             <li *ngFor="let page of paginators; let i = index" class="page-item" [ngClass]="{active: i+1 == activePage}">
               <a class="page-link waves-light" (click)="changePage($event)" mdbWavesEffect>{{page}}</a>
             </li>
-    
-    
-    
-            <!--Arrow right-->
-            <li class="page-item" (click)="nextPage($event)" [ngClass]="{disabled: activePage == 10}">
+
+            <li class="page-item" (click)="nextPage($event)" [ngClass]="{disabled: activePage == 20}">
               <a class="page-link" aria-label="Next">
                 <span aria-hidden="true">&raquo;</span>
                 <span class="sr-only">Next</span>
               </a>
             </li>
     
-            <!--Last-->
-            <li class="page-item clearfix d-none d-md-block" (click)="lastPage()" [ngClass]="{disabled: activePage == 10}">
+            <li class="page-item clearfix d-none d-md-block" (click)="lastPage()" [ngClass]="{disabled: activePage == 20}">
               <a class="page-link">Last</a>
             </li>
     
           </ul>
         </nav>
-        <!--/Pagination -->
     
       </div>
-      <!--Bottom Table UI-->
+
+      <!-- <mat-form-field>
+      <mat-select matInput placeholder="Favorite food">
+        <mat-option *ngFor="let item of organizationList" [value]="item">
+          {{item}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field> -->
