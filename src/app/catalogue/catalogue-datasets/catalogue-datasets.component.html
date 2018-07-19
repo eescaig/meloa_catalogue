@@ -1,67 +1,30 @@
 <br>
-<!-- <div [formGroup]="filterForm">
-
-  <div *ngFor="let data of (page | async)?.result" [ngClass]="{'available': data.is_available, 'data': true}">
-    {{ data }}
-  </div>
-
-  <app-paginator [page]="page | async" (pageChange)="onPageChanged($event)"></app-paginator>
-</div> -->
-
+<div *ngIf="errorMessage">
+  <mat-label>{{errorMessage}}</mat-label>
+  <br>
+</div>
 <div class="d-flex justify-content-center">
     <div class="space-select">
-      <app-select [labelName] = "labelOrgs" [selectList] = "organizationList" [styleSelect]=""></app-select>
+      <app-select [labelName] = "labelOrgs" [selectList] = "organizationList" [styleSelect]=""
+                  (selectEvent)="selectedOrg=$event"></app-select>
     </div>
 
     <div class="space-select">
-      <app-select [labelName] = "labelGroups" [selectList] = "groupList" [styleSelect]="styleSelect"></app-select>
+      <app-select [labelName] = "labelGroups" [selectList] = "groupList" [styleSelect]="styleSelect"
+                  (selectEvent)="selectedGroup=$event"></app-select>
     </div>
 
     <div class="space-select">
-      <app-select [labelName] = "labelTags" [selectList] = "tagList" [styleSelect]="styleSelect"></app-select>
+      <app-select [labelName] = "labelTags" [selectList] = "tagList" [styleSelect]="styleSelect"
+                  (selectEvent)="selectedTag=$event"></app-select>
     </div>
-    
-    <!-- <div class="space-select">
-    <form [formGroup]="orgForm">
-      <div class="input-group mb-3">
-        <div class="input-group-prepend">
-          <label class="input-group-text">Organization</label>
-        </div>
-        <select class="custom-select" formControlName="organizationControl">
-          <option >Choose...</option>
-          <option [value]="org" *ngFor="let org of organizationList">{{org | uppercase}}</option>
-        </select>
-      </div>
-    </form>
-   </div> -->
-   
-   <!-- <div class="space-select">
-    <form [formGroup]="groupForm">
-      <div class="input-group mb-3 ">
-        <div class="input-group-prepend">
-          <label class="input-group-text">Groups</label>
-        </div>
-        <select class="custom-select ancho" formControlName="groupControl">
-          <option selected>Choose...</option>
-          <option [value]="group" *ngFor="let group of groupList">{{group | uppercase | stringPipe}}</option>
-        </select>
-      </div>
-    </form>
-  </div>
+</div>
 
-  <div class="space-select">
-    <form [formGroup]="tagForm">
-      <div class="input-group mb-3">
-        <div class="input-group-prepend">
-          <label class="input-group-text">Tags</label>
-        </div>
-        <select class="custom-select ancho" formControlName="tagControl">
-          <option selected>Choose...</option>
-          <option [value]="tag" *ngFor="let tag of tagList">{{tag | uppercase}}</option>
-        </select>
-      </div>
-    </form>
-  </div> -->
+<div class="padding-button">
+    <!-- <label>{{selectedOrg}}</label>
+    <label>{{selectedGroup}}</label>
+    <label>{{selectedTag}}</label> -->
+    <button type="button" class="btn btn-indigo" (click)="search()">Search</button>
 </div>
 
 <table class="table table-bordered">
@@ -70,9 +33,12 @@
     </thead>
     <tbody>
         <tr *ngFor="let data of datasetList; let i = index">
-            <td *ngIf="i >= firstVisibleIndex && i <= lastVisibleIndex">
-                <a [routerLink]="[data]" (click)="goToDetail(data)"> {{data}} </a>
-            </td>
+          <td>
+            <a [routerLink]="[data.datasetName]" (click)="goToDetail(data.datasetName)"> 
+              <h5 class="font-weight-bold mt-3">{{data.title}} - {{data.datasetName}}</h5>
+            </a>
+              <p class="grey-text">{{data.notes}}
+          </td>
         </tr>
     </tbody>
   </table>

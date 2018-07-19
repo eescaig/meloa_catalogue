@@ -1,5 +1,7 @@
+import { Search } from './../models/search.model';
+import { DatasetDetail } from './../models/dataset-detail.model';
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { Observable } from 'rxjs';
@@ -14,6 +16,16 @@ import { DatasetList } from '../models/dataset-list.model';
 })
 export class CatalogueDatasetsComponent implements OnInit {
   
+  labelOrgs : string = 'Organizations';
+  labelGroups : string = 'Groups';
+  labelTags : string = 'Tags';
+  styleSelect : string = 'ancho';
+
+  selectedOrg : string = "";
+  selectedGroup : string = "";
+  selectedTag : string = "";
+  errorMessage : string = "";
+
   organizationList: Observable<DatasetList>;
   groupList: Observable<DatasetList>;
   tagList: Observable<DatasetList>;
@@ -21,11 +33,7 @@ export class CatalogueDatasetsComponent implements OnInit {
   detail : string;
   totalItems : number;
 
-  labelOrgs : string = 'Organizations';
-  labelGroups : string = 'Groups';
-  labelTags : string = 'Tags';
-  styleSelect : string = 'ancho';
-
+  
   /* orgForm: FormGroup;
   groupForm: FormGroup;
   tagForm: FormGroup; */
@@ -46,7 +54,7 @@ export class CatalogueDatasetsComponent implements OnInit {
    ) { }
 
   ngOnInit() {
-    this.searchPackageList('200');
+    //this.searchPackageList('200');
     this.getOrganizationList();
     this.getGroupList();
     this.getTagList();
@@ -54,6 +62,34 @@ export class CatalogueDatasetsComponent implements OnInit {
     /* this.orgForm = this.fb.group({organizationControl: ['Choose...']});
     this.groupForm = this.fb.group({groupControl: ['Choose...']});
     this.tagForm = this.fb.group({tagControl: ['Choose...']}); */
+  }
+
+  search() {
+    this.resetValues();
+    if(this.selectedOrg!="" || this.selectedGroup!="" || this.selectedTag!="") {
+      console.log("Entrando " + this.selectedOrg + " " + this.selectedGroup + " " + this.selectedTag);
+      let objSearch = new Search(this.selectedOrg, this.selectedGroup, this.selectedTag);
+      this.simoceanService.getPackageSearch(objSearch)
+                          .subscribe((data) => {
+                            if(data['success']==true && data['result']['count']>0) {
+                              let result = data['result'];
+                              console.log(result);
+                              this.totalItems = result['count'];
+                              this.organizationList = result['search_facets']['organization']['items'].map(g => {return g.name});
+                              this.groupList = result['search_facets']['groups']['items'].map(g => {return g.name});
+                              this.tagList = result['search_facets']['tags']['items'].map(t => {return t.name});
+                              this.datasetList = this.parsePackageResults(result['results']);
+                              
+                              //this.setValuesPaginator(this.totalItems>200 ? 200 : this.totalItems);
+                            }
+                            else {
+                              this.errorMessage = "Your search has no results";
+                            }
+                          });
+    }
+    else {
+      this.errorMessage = "You should select at least a filter to search";
+    }
   }
 
   getOrganizationList() {
@@ -105,6 +141,52 @@ export class CatalogueDatasetsComponent implements OnInit {
   /* onPageChanged(url: string) {
     this.pageUrl.next(url);
   } */
+
+  private resetValues() {
+    this.errorMessage = "";
+    this.totalItems = 0;
+    //this.datasetList = [];
+    //this.paginators = [];
+  }
+
+  private parsePackageResults(results: any[]) : any {
+    let items : DatasetDetail[] = [];
+    return results.map(item => { //console.log(item) 
+        let id: string = item['id'];
+        let datasetName : string = item['name'];
+        let title : string = item['title'];
+        let notes : string = item['notes'];
+        
+        let contact: string; // extras - {key: "Contact", value: "Instituto Hidrográfico (IH)"}
+        let email: string;   // extras - {key: "Contact Email", value: "mail@hidrografico.pt"}
+        let creationTime: Date; // extras - {key: "CreationTime", value: "2018-02-23T00:00:00.000000Z"}
+        let topicCategory : string; // extras - {key: "Topic Category", value: "oceans"}
+        item['extras'].map(extra => { 
+              if(extra.key==="Contact") {
+                contact = extra.value;
+              } 
+              if(extra.key==="Contact Email") {
+                email = extra.value;
+              }
+              if(extra.key==="CreationTime") {
+                creationTime = extra.value;
+              }
+              if(extra.key==="Topic Category") {
+                topicCategory = extra.value;
+              }
+        });
+        
+        let groups : string[];  // groups - title or display_name
+        groups = item['groups'].map(g => {return g.display_name});
+        let tags : string[] // tags - name
+        tags = item['tags'].map(t => {return t.display_name});
+        
+        let dataset = new DatasetDetail(id, datasetName, title, notes, contact, email, creationTime, topicCategory, groups, tags);
+        return dataset;
+     });
+    //console.log(items);
+    //return items;
+  }
   
   // Table pagination
   setValuesPaginator(totalItem : number) {
