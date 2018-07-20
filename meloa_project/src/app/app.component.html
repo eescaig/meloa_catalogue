@@ -1,0 +1,22 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<div class="container">
+    <div class="item-a">
+        <h1>
+            Welcome to {{ title }}!
+        </h1>
+    </div>
+    
+    <mat-toolbar class="item-b" color="primary">
+        <mat-toolbar-row>
+            <button mat-button [routerLink]="['']">MELOA</button>
+            <button mat-button [routerLink]="['/dataset']">Catalogue</button>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    
+    <mat-sidenav-container class="item-c">
+        <router-outlet></router-outlet>
+    </mat-sidenav-container>
+</div>
+
+
+

@@ -3,6 +3,29 @@
   <mat-label>{{errorMessage}}</mat-label>
   <br>
 </div>
+
+<div class="mat-app-background">
+  <mat-form-field>
+    <input matInput [matDatepicker]="myPicker" placeholder="Choose a date" [(ngModel)]="maxDate">
+    <mat-datepicker-toggle matSuffix [for]="myPicker"></mat-datepicker-toggle>
+    <mat-datepicker #myPicker></mat-datepicker>
+  </mat-form-field>
+</div>
+<br>
+
+<!-- <div style="position: relative;" class="div-date">
+  <button class="btn btn-sm btn-new btn-block fromButton" type="button">
+  <input matInput class="dateTo" [matDatepicker]="pickerTo" style="position: absolute;" placeholder="Choose a date" (dateChange)="chosenDayHandler($event, pickerTo)">
+  <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+  <mat-datepicker [panelClass]="fromDatePickerClass" #pickerTo [startView]="datePickerUnit" (yearSelected)="chosenYearHandler($event, pickerTo)" (monthSelected)="chosenMonthHandler($event, pickerTo)" md-mode="month" ></mat-datepicker>
+  <span style="display:table; margin: 0 auto;">
+  <span>{{parseDate(dateTo)}}</span>
+  </span>
+  </button>
+</div> -->
+
+
+
 <div class="d-flex justify-content-center">
     <div class="space-select">
       <app-select [labelName] = "labelOrgs" [selectList] = "organizationList" [styleSelect]=""
@@ -37,7 +60,7 @@
             <a [routerLink]="[data.datasetName]" (click)="goToDetail(data.datasetName)"> 
               <h5 class="font-weight-bold mt-3">{{data.title}} - {{data.datasetName}}</h5>
             </a>
-              <p class="grey-text">{{data.notes}}
+            <p class="grey-text">{{data.notes}}
           </td>
         </tr>
     </tbody>

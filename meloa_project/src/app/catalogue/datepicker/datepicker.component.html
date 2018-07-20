@@ -1,0 +1,8 @@
+<mat-label class="label-date-style">{{labelDate}}: </mat-label>
+<mat-form-field>
+    <input matInput [matDatepicker]="myPicker" placeholder="Choose a date" [(ngModel)]="date" (dateChange)="onChange()">
+    <mat-datepicker-toggle matSuffix [for]="myPicker">
+      <!-- <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon> -->
+    </mat-datepicker-toggle>
+    <mat-datepicker #myPicker></mat-datepicker>
+</mat-form-field>

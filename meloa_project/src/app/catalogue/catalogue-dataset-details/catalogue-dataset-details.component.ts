@@ -7,7 +7,7 @@ import { DatasetDetail } from './../models/dataset-detail.model';
 @Component({
   selector: 'app-catalogue-dataset-details',
   templateUrl: './catalogue-dataset-details.component.html',
-  styleUrls: ['./catalogue-dataset-details.component.scss']
+  styleUrls: ['./catalogue-dataset-details.component.css']
 })
 export class CatalogueDatasetDetailsComponent implements OnInit {
   
@@ -34,7 +34,7 @@ export class CatalogueDatasetDetailsComponent implements OnInit {
                       
                             this.count = resultsAux['count'];
                             this.detailResults = this.parsePackageResults(resultsAux['results']); //JSON.stringify(this.results)
-                            //console.log(this.detailResults);
+                            console.log(this.detailResults);
                           }
                         });
   }
@@ -51,7 +51,6 @@ export class CatalogueDatasetDetailsComponent implements OnInit {
         let email: string;   // extras - {key: "Contact Email", value: "mail@hidrografico.pt"}
         let creationTime: Date; // extras - {key: "CreationTime", value: "2018-02-23T00:00:00.000000Z"}
         let topicCategory : string; // extras - {key: "Topic Category", value: "oceans"}
-        let extras : any[] = item['extras'];
         item['extras'].map(extra => { 
               if(extra.key==="Contact") {
                 contact = extra.value;

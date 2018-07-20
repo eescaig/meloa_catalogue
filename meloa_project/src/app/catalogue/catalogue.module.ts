@@ -2,14 +2,17 @@ import { CatalogueSemioceanService } from './services/catalogue-semiocean.servic
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule }    from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule, Routes } from '@angular/router';
-import { MatNativeDateModule, MatFormFieldModule, MatInputModule, MatDatepickerModule } from '@angular/material';
+import { MatFormFieldModule, MatPaginatorModule, MatSelectModule, MatOptionModule, MatIconModule,
+          MatTableModule, MatButtonModule, MatNativeDateModule, MatInputModule, MatDatepickerModule, MatDividerModule } from '@angular/material';
 
 import { CatalogueDatasetsComponent } from './catalogue-datasets/catalogue-datasets.component';
 import { CatalogueDatasetDetailsComponent } from './catalogue-dataset-details/catalogue-dataset-details.component';
 import { PaginatorComponent } from './paginator/paginator.component';
 import { TransformStringPipe } from './pipes/transform-string-pipe';
 import { SelectComponent } from './select/select.component';
+import { DatepickerComponent } from './datepicker/datepicker.component';
 
 const datasetRoutes: Routes = [
   { path: 'dataset',  component: CatalogueDatasetsComponent },
@@ -19,19 +22,28 @@ const datasetRoutes: Routes = [
   imports: [
     CommonModule,
     FormsModule,
+    BrowserModule,
     ReactiveFormsModule,
     RouterModule.forChild(datasetRoutes),
     MatFormFieldModule,
+    MatPaginatorModule,
     MatNativeDateModule,
     MatInputModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatButtonModule,
+    MatIconModule,
+    MatSelectModule,
+    MatOptionModule,
+    MatTableModule,
+    MatDividerModule
   ],
   declarations: [
     CatalogueDatasetsComponent,
     CatalogueDatasetDetailsComponent,
     PaginatorComponent,
     TransformStringPipe,
-    SelectComponent
+    SelectComponent,
+    DatepickerComponent
   ],
   exports: [
     RouterModule

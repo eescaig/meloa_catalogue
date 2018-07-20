@@ -45,20 +45,19 @@ export class CatalogueSemioceanService {
     }
     
     packageListURL = packageListURL + params;
-    //console.log(packageListURL);
+    console.log(packageListURL);
     return this.http.get(packageListURL);
   }
 
   getPackageList(limit: string) {
-    let packageListURL = this.apiBaseUrl + '/package_list'; //?limit=25
+    const packageListURL = this.apiBaseUrl + '/package_list'; //?limit=25
     let paramsLimit = new HttpParams().set('limit', limit);
-    console.log(packageListURL);
-    return this.http.get<Observable<DatasetList>>(packageListURL, {params: paramsLimit});
+    return this.http.get<Observable<DatasetList>>(packageListURL.toString(), {params: paramsLimit});
   }
 
   getPackage(selectedDataset : string) {
     const packageListURL = this.apiBaseUrl + '/package_search?q=' + selectedDataset;
-    return this.http.get(packageListURL);
+    return this.http.get(packageListURL.toString());
   }
 
 }
