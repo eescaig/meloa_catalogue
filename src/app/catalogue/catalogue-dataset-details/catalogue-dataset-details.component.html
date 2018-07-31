@@ -3,6 +3,8 @@
     <div class="col-md-4" *ngFor="let detail of detailResults">
         <i class="fa fa-book fa-3x cyan-text"></i>
         <h5 class="font-weight-bold mt-3">{{detail.title}} - {{detail.datasetName}}</h5>
+        <h6 class="font-weight-bold mt-3">Start time: </h6><span>{{detail.startTime | date:'medium'}}</span>
+        <h6 class="font-weight-bold mt-3">Stop time: </h6><span>{{detail.stopTime | date:'medium'}}</span>
         <p class="grey-text">{{detail.notes}}
         </p>
     </div>

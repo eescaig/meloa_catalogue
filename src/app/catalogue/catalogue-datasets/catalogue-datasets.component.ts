@@ -1,81 +1,81 @@
-import { Search } from './../models/search.model';
 import { DatasetDetail } from './../models/dataset-detail.model';
-import { Component, OnInit } from '@angular/core';
+import { Search } from './../models/search.model';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { CatalogueSemioceanService } from './../services/catalogue-semiocean.service';
 import { DatasetList } from '../models/dataset-list.model';
+import {MatPaginator, MatTableDataSource} from '@angular/material';
+import Utils from '../utils';
 
 @Component({
   selector: 'app-catalogue-datasets',
   templateUrl: './catalogue-datasets.component.html',
-  styleUrls: ['./catalogue-datasets.component.scss']
+  styleUrls: ['./catalogue-datasets.component.css']
 })
 export class CatalogueDatasetsComponent implements OnInit {
   
-  maxDate: Date;
-  labelOrgs : string = 'Organizations';
-  labelGroups : string = 'Groups';
-  labelTags : string = 'Tags';
+  startDate : Date;
+  endDate : Date;
   styleSelect : string = 'ancho';
-
+  defaultValue : string = 'Choose...';
   selectedOrg : string = "";
   selectedGroup : string = "";
   selectedTag : string = "";
   errorMessage : string = "";
+  resetCombos : boolean = false;
 
   organizationList: Observable<DatasetList>;
   groupList: Observable<DatasetList>;
   tagList: Observable<DatasetList>;
-  datasetList: Observable<DatasetDetail>; //<Page<DatasetList>>
-  detail : string;
+  datasetList: DatasetDetail[];
   totalItems : number;
+  private searchSubscription: Subscription;
 
-  // Table pagination example 1
-  paginators: Array<any> = []; //1, 2, 3, 4, 5, 6, 7, 8, 9, 10
-  activePage: number = 1;
-  firstVisibleIndex: number = 1;
-  lastVisibleIndex: number = 10;
+  displayedColumns: string[] = ['dataset'];
+  dataSource : MatTableDataSource<DatasetDetail>;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor (
     private simoceanService: CatalogueSemioceanService,
-    private router : Router
-   ) { }
+    private router : Router) 
+    {}
 
   ngOnInit() {
-    //this.searchPackageList('200');
     this.getOrganizationList();
     this.getGroupList();
     this.getTagList();
   }
-
+  
   search() {
     this.resetValues();
-    if(this.selectedOrg!="" || this.selectedGroup!="" || this.selectedTag!="") {
-      console.log("Entrando " + this.selectedOrg + " " + this.selectedGroup + " " + this.selectedTag);
-      let objSearch = new Search(this.selectedOrg, this.selectedGroup, this.selectedTag);
-      this.simoceanService.getPackageSearch(objSearch)
-                          .subscribe((data) => {
-                            if(data['success']==true && data['result']['count']>0) {
-                              let result = data['result'];
-                              
-                              this.totalItems = result['count'];
-                              this.organizationList = result['search_facets']['organization']['items'].map(g => {return g.name});
-                              this.groupList = result['search_facets']['groups']['items'].map(g => {return g.name});
-                              this.tagList = result['search_facets']['tags']['items'].map(t => {return t.name});
-                              this.datasetList = this.parsePackageResults(result['results']);
-                              console.log(this.datasetList);
-                              this.setValuesPaginator(this.totalItems>200 ? 200 : this.totalItems);
-                            }
-                            else {
-                              this.errorMessage = "Your search has no results";
-                            }
-                          });
-    }
-    else {
-      this.errorMessage = "You should select at least a filter to search";
-    }
+      console.log("selectedOrg " + this.selectedOrg + "startDate " + this.startDate + " endDate " + this.endDate);
+      let objSearch = this.validations(this.selectedOrg, this.selectedGroup, this.selectedTag, this.startDate, this.endDate);
+      if(objSearch!==undefined) { //this.errorMessage===""
+      console.log(objSearch.toString());
+        //let objSearch = new Search(this.selectedOrg, this.selectedGroup, this.selectedTag, this.startDate, this.endDate);
+        
+        this.searchSubscription = this.simoceanService.getPackageSearch(objSearch)
+                            .subscribe((data) => {
+                              if(data['success']==true && data['result']['count']>0) {
+                                let result = data['result'];
+                                //console.log(result);
+                                //this.totalItems = result['count'];
+                                this.organizationList = result['search_facets']['organization']['items'].map(g => {return g.name});
+                                this.groupList = result['search_facets']['groups']['items'].map(g => {return g.name});
+                                this.tagList = result['search_facets']['tags']['items'].map(t => {return t.name});
+                                this.datasetList = Utils.parsePackageResults(result['results']);
+                                this.totalItems = this.datasetList.length;
+                                
+                                this.setDatasetValues(this.datasetList, this.paginator);
+                                console.log(this.datasetList);
+                              }
+                              else {
+                                this.errorMessage = "Your search has no results";
+                              }
+                            });
+      }
   }
 
   getOrganizationList() {
@@ -113,8 +113,6 @@ export class CatalogueDatasetsComponent implements OnInit {
                         .subscribe((data) => {
                           if(data['success']==true) {
                             this.datasetList = data['result'];
-                            this.totalItems = data['result'].length;
-                            this.setValuesPaginator(this.totalItems);
                           }
                         });
   }
@@ -124,15 +122,77 @@ export class CatalogueDatasetsComponent implements OnInit {
     this.router.navigate(['dataset/' + selected]);
   }
 
+  /* ngOnDestroy() {
+    this.searchSubscription.unsubscribe();
+  } */
+
+  reset() {
+    this.resetValues();
+    this.ngOnInit();
+    this.selectedOrg = "";
+    this.selectedGroup = "";
+    this.selectedTag = "";
+    this.startDate = undefined;
+    this.endDate = undefined;
+    this.resetCombos = true;
+  }
+  
+  private setDatasetValues(datasetList: DatasetDetail[], paginator: MatPaginator) {
+    this.dataSource = new MatTableDataSource<DatasetDetail>(datasetList);
+    this.dataSource.paginator = paginator;
+  }
+
   private resetValues() {
     this.errorMessage = "";
     this.totalItems = 0;
-    //this.datasetList = [];
-    //this.paginators = [];
+    this.datasetList = [];
+    this.setDatasetValues(this.datasetList, this.paginator);
+    this.resetCombos = false;
+  }
+  
+  private validations(selectedOrg: string, selectedGroup: string, selectedTag: string, startTime: Date, stopTime: Date) : Search {
+    
+    let objSearch : Search = this.validationsDates(selectedOrg, selectedGroup, selectedTag, startTime, stopTime);
+    
+    if(startTime===undefined && stopTime===undefined && this.validateSelect(selectedOrg) && this.validateSelect(selectedGroup) && this.validateSelect(selectedTag)) {
+      this.errorMessage = "You should select at least a filter to search";
+      return;
+      //console.log(message);
+    }
+    return objSearch;
   }
 
-  private parsePackageResults(results: any[]) : any {
-    let items : DatasetDetail[] = [];
+  private validateSelect(value : string) : boolean {
+    return value==="" || value===this.defaultValue;
+  }
+
+  private validationsDates(selectedOrg: string, selectedGroup: string, selectedTag: string, startTime: Date, stopTime: Date) : Search {
+    let tempEndDate, tempStartDate : Date;
+    if(startTime!==undefined && stopTime===undefined) {
+       //console.log("Primer if startTime");
+      tempStartDate = startTime;
+      tempEndDate = startTime;
+    }
+    else if(startTime===undefined && stopTime!==undefined) {
+      //console.log("Segundo if stopTime");
+      tempStartDate = stopTime;
+      tempEndDate   = stopTime;
+    }
+    else if(startTime!==undefined && stopTime!==undefined) {
+      //console.log("Tercer if " + (stopTime.getTime() > startTime.getTime()));
+      if(startTime!==null && stopTime!==null && (startTime.getTime() > stopTime.getTime())) {
+        this.errorMessage = "The 'End date' must be greater than the 'start date'";
+        return;
+      }
+      tempStartDate = startTime; 
+      tempEndDate   = stopTime;
+    }
+    
+    return new Search(selectedOrg, selectedGroup, selectedTag, tempStartDate, tempEndDate);
+  }
+
+  /* private parsePackageResults(results: any[]) {
+    //let items : Observable<DatasetDetail>[];
     return results.map(item => { //console.log(item) 
         let id: string = item['id'];
         let datasetName : string = item['name'];
@@ -142,6 +202,8 @@ export class CatalogueDatasetsComponent implements OnInit {
         let contact: string; // extras - {key: "Contact", value: "Instituto Hidrográfico (IH)"}
         let email: string;   // extras - {key: "Contact Email", value: "mail@hidrografico.pt"}
         let creationTime: Date; // extras - {key: "CreationTime", value: "2018-02-23T00:00:00.000000Z"}
+        let startTime: Date;
+        let stopTime: Date;
         let topicCategory : string; // extras - {key: "Topic Category", value: "oceans"}
         item['extras'].map(extra => { 
               if(extra.key==="Contact") {
@@ -153,6 +215,12 @@ export class CatalogueDatasetsComponent implements OnInit {
               if(extra.key==="CreationTime") {
                 creationTime = extra.value;
               }
+              if(extra.key==="StartTime") {
+                startTime = extra.value;
+              }
+              if(extra.key==="StopTime") {
+                stopTime = extra.value;
+              }
               if(extra.key==="Topic Category") {
                 topicCategory = extra.value;
               }
@@ -163,50 +231,10 @@ export class CatalogueDatasetsComponent implements OnInit {
         let tags : string[] // tags - name
         tags = item['tags'].map(t => {return t.display_name});
         
-        let dataset = new DatasetDetail(id, datasetName, title, notes, contact, email, creationTime, topicCategory, groups, tags);
-        return dataset;
+        return new DatasetDetail(id, datasetName, title, notes, contact, email, creationTime, startTime, stopTime, topicCategory, groups, tags);
      });
+     
     //console.log(items);
-    //return items;
-  }
-  
-  // Table pagination
-  setValuesPaginator(totalItem : number) {
-    let total : number = totalItem / 10;
-    for(var i=1; i<=total; i++) {
-        this.paginators.push(i);
-    }
-  }
-
-  changePage(event: any) {
-    if (event.target.text >= 1 && event.target.text <= this.totalItems) {
-      this.activePage = +event.target.text;
-      this.firstVisibleIndex = this.activePage * 10 - 10 + 1;
-      this.lastVisibleIndex = this.activePage * 10;
-    }
-  }
-
-  nextPage(event: any) {
-    this.activePage += 1;
-    this.firstVisibleIndex = this.activePage * 10 - 10 + 1;
-    this.lastVisibleIndex = this.activePage * 10;
-  }
-  previousPage(event: any) {
-    this.activePage -= 1;
-    this.firstVisibleIndex = this.activePage * 10 - 10 + 1;
-    this.lastVisibleIndex = this.activePage * 10;
-  }
-
-  firstPage() {
-    this.activePage = 1;
-    this.firstVisibleIndex = this.activePage * 10 - 10 + 1;
-    this.lastVisibleIndex = this.activePage * 10;
-  }
-
-  lastPage() {
-    this.activePage = 20;
-    this.firstVisibleIndex = this.activePage * 10 - 10 + 1;
-    this.lastVisibleIndex = this.activePage * 10;
-  }
+  } */
 
 }

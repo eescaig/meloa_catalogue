@@ -1,0 +1,9 @@
+<mat-label class="label-date-style">{{labelDate}}: </mat-label>
+<mat-form-field>
+    <input matInput [min]="minDate" [max]="maxDate" [matDatepicker]="myPicker" [value]="myValue"
+           placeholder="Chose a date" (focus)="myPicker.open()" (dateChange)="onChange($event)">
+    <mat-datepicker-toggle matSuffix [for]="myPicker">
+      <!-- <mat-icon matDatepickerToggleIcon>keyboard_arrow_down</mat-icon> -->
+    </mat-datepicker-toggle>
+    <mat-datepicker #myPicker></mat-datepicker>
+</mat-form-field>

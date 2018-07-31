@@ -1,14 +1,15 @@
+import { MapModule } from './map/map.module';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
-import { MatFormFieldModule, MatSelectModule, MatOptionModule } from '@angular/material';
+import { MatFormFieldModule, MatButtonModule } from '@angular/material';
+import {MatToolbarModule} from '@angular/material/toolbar';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-
-import { AppComponent } from './app.component';
 import { MDBBootstrapModule } from 'angular-bootstrap-md';
 
+import { AppComponent } from './app.component';
 import { CatalogueModule } from './catalogue/catalogue.module';
 
 const catalogueRoutes: Routes = [
@@ -25,12 +26,13 @@ const catalogueRoutes: Routes = [
     BrowserAnimationsModule,
     FormsModule,
     MatFormFieldModule,
-    MatSelectModule, 
-    MatOptionModule,
+    MatToolbarModule,
+    MatButtonModule,
     HttpClientModule,
     RouterModule.forRoot(catalogueRoutes),
     CatalogueModule,
-    MDBBootstrapModule.forRoot()
+    MDBBootstrapModule.forRoot(),
+    MapModule
   ],
   exports: [
     RouterModule

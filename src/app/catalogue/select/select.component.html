@@ -1,13 +1,29 @@
-
 <form [formGroup]="selectForm">
   <div class="input-group mb-3">
-    <div class="input-group-prepend">
+    <!-- <div class="input-group-prepend">
       <label class="input-group-text">{{labelName}}</label>
-    </div>
-    <select class="custom-select {{styleSelect}}" formControlName="selectControl"
-            #selectedValue (change)="onChangeCombo(selectedValue.value)">
-      <option >Choose...</option>
+    </div> -->
+    <mat-label class="label-style">{{labelName}}: </mat-label>
+    <select class="custom-select {{styleSelect}}" #selectedValue formControlName="selectControl"
+            (change)="onChangeCombo(selectedValue.value)">
+      <option>{{defaultValue}}</option>
       <option [value]="item" *ngFor="let item of selectList">{{item | uppercase | stringPipe}}</option>
     </select>
   </div>
 </form>
+
+<!-- <p>HOLAAAAA</p>
+<form [formGroup]="selectForm">
+    <mat-form-field>
+      <mat-label class="label-style">{{labelName}}: </mat-label>
+      <mat-select class="custom-select {{styleSelect}}" placeholder="{{labelName}}" 
+                  [value]="selectedValue" (selectionChange)="onChangeCombo($event)">
+        <mat-option >Choose...</mat-option>
+        <mat-option *ngFor="let item of selectList" [value]="item">
+            {{item | uppercase | stringPipe}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </form> -->
+
+

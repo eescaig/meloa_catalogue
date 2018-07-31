@@ -1,43 +1,23 @@
 <!--The content below is only a placeholder and can be replaced.-->
 <div class="container">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <!-- <div class="navLinks">
-      <a [routerLink]="['/dataset']">Catalogue</a>
-  </div> -->
-  <!--Navbar-->
-<mdb-navbar SideClass="navbar navbar-expand-lg navbar-dark indigo">
-
-    <!-- Navbar brand -->
-    <logo><a class="navbar-brand" [routerLink]="['']">MELOA</a></logo>
-
-    <!-- Collapsible content -->
-    <links>
-
-        <!-- Links -->
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link waves-light" mdbWavesEffect [routerLink]="['/dataset']">Catalogue</a>
-            </li>
-        </ul>
-        <!-- Links -->
-
-<!-- Search form -->
-        <!-- <form class="form-inline waves-light" mdbWavesEffect>
-            <div class="md-form mt-0">
-                <input class="form-control mr-sm-2" type="text" placeholder="Search">
-            </div>
-        </form> -->
-    </links>
-    <!-- Collapsible content -->
-
-</mdb-navbar>
-<!--/.Navbar-->
-
+    <div class="item-a">
+        <h1>
+            Welcome to {{ title }}!
+        </h1>
+    </div>
+    
+    <mat-toolbar class="item-b" color="primary">
+        <mat-toolbar-row>
+            <button mat-button [routerLink]="['']">MELOA</button>
+            <button mat-button [routerLink]="['/dataset']">Catalogue</button>
+            <button mat-button [routerLink]="['/map']">Maps</button>
+        </mat-toolbar-row>
+    </mat-toolbar>
+    
+    <mat-sidenav-container class="item-c">
+        <router-outlet></router-outlet>
+    </mat-sidenav-container>
 </div>
-<div class="container">
-  <router-outlet></router-outlet>
-</div>
+
 
 

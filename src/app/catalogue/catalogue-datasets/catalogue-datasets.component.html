@@ -1,112 +1,77 @@
 <br>
-<div *ngIf="errorMessage">
-  <mat-label>{{errorMessage}}</mat-label>
-  <br>
-</div>
-
-<div class="mat-app-background">
-  <mat-form-field>
-    <input matInput [matDatepicker]="myPicker" placeholder="Choose a date" [(ngModel)]="maxDate">
-    <mat-datepicker-toggle matSuffix [for]="myPicker"></mat-datepicker-toggle>
-    <mat-datepicker #myPicker></mat-datepicker>
-  </mat-form-field>
-</div>
-<br>
-
-<!-- <div style="position: relative;" class="div-date">
-  <button class="btn btn-sm btn-new btn-block fromButton" type="button">
-  <input matInput class="dateTo" [matDatepicker]="pickerTo" style="position: absolute;" placeholder="Choose a date" (dateChange)="chosenDayHandler($event, pickerTo)">
-  <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
-  <mat-datepicker [panelClass]="fromDatePickerClass" #pickerTo [startView]="datePickerUnit" (yearSelected)="chosenYearHandler($event, pickerTo)" (monthSelected)="chosenMonthHandler($event, pickerTo)" md-mode="month" ></mat-datepicker>
-  <span style="display:table; margin: 0 auto;">
-  <span>{{parseDate(dateTo)}}</span>
-  </span>
-  </button>
-</div> -->
-
-
-
-<div class="d-flex justify-content-center">
-    <div class="space-select">
-      <app-select [labelName] = "labelOrgs" [selectList] = "organizationList" [styleSelect]=""
-                  (selectEvent)="selectedOrg=$event"></app-select>
-    </div>
-
-    <div class="space-select">
-      <app-select [labelName] = "labelGroups" [selectList] = "groupList" [styleSelect]="styleSelect"
-                  (selectEvent)="selectedGroup=$event"></app-select>
-    </div>
-
-    <div class="space-select">
-      <app-select [labelName] = "labelTags" [selectList] = "tagList" [styleSelect]="styleSelect"
-                  (selectEvent)="selectedTag=$event"></app-select>
-    </div>
-</div>
-
-<div class="padding-button">
-    <!-- <label>{{selectedOrg}}</label>
-    <label>{{selectedGroup}}</label>
-    <label>{{selectedTag}}</label> -->
-    <button type="button" class="btn btn-indigo" (click)="search()">Search</button>
-</div>
-
-<table class="table table-bordered">
-    <thead class="mdb-color darken-3">
-        <th class="text-white">Datasets</th>
-    </thead>
-    <tbody>
-        <tr *ngFor="let data of datasetList; let i = index">
-          <td>
-            <a [routerLink]="[data.datasetName]" (click)="goToDetail(data.datasetName)"> 
-              <h5 class="font-weight-bold mt-3">{{data.title}} - {{data.datasetName}}</h5>
-            </a>
-            <p class="grey-text">{{data.notes}}
-          </td>
-        </tr>
-    </tbody>
-  </table>
-
-  <!--Bottom Table UI Pagination-->
-  <div class="d-flex justify-content-center">
-
-        <nav class="my-4 pt-2">
-          <ul class="pagination pagination-circle pg-purple mb-0">
-    
-            <li class="page-item clearfix d-none d-md-block" (click)="firstPage()" [ngClass]="{disabled: activePage == 1}">
-              <a class="page-link">First</a>
-            </li>
-    
-            <li class="page-item" (click)="previousPage($event)" [ngClass]="{disabled: activePage == 1}">
-              <a class="page-link" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-                <span class="sr-only">Previous</span>
-              </a>
-            </li>
-    
-            <li *ngFor="let page of paginators; let i = index" class="page-item" [ngClass]="{active: i+1 == activePage}">
-              <a class="page-link waves-light" (click)="changePage($event)" mdbWavesEffect>{{page}}</a>
-            </li>
-
-            <li class="page-item" (click)="nextPage($event)" [ngClass]="{disabled: activePage == 20}">
-              <a class="page-link" aria-label="Next">
-                <span aria-hidden="true">&raquo;</span>
-                <span class="sr-only">Next</span>
-              </a>
-            </li>
-    
-            <li class="page-item clearfix d-none d-md-block" (click)="lastPage()" [ngClass]="{disabled: activePage == 20}">
-              <a class="page-link">Last</a>
-            </li>
-    
-          </ul>
-        </nav>
-    
-      </div>
-
+<div class="container-catalogue">
+  <div class="item-error" *ngIf="errorMessage">
+    <mat-error class="my-error-style">{{errorMessage}} !!!</mat-error>
+    <br>
+  </div>
+  <div class="item-date-first">
+      <mat-label class="my-label-style">Filter by date: </mat-label>
       <!-- <mat-form-field>
-      <mat-select matInput placeholder="Favorite food">
-        <mat-option *ngFor="let item of organizationList" [value]="item">
-          {{item}}
-        </mat-option>
-      </mat-select>
-    </mat-form-field> -->
+        <input matInput [matDatepicker]="myPicker" placeholder="Choose a date" [(ngModel)]="maxDate">
+        <mat-datepicker-toggle matSuffix [for]="myPicker"></mat-datepicker-toggle>
+        <mat-datepicker #myPicker></mat-datepicker>
+      </mat-form-field> -->
+  </div>
+  <div class="item-date-second">
+      <app-datepicker [labelDate]="'Start'" [myValue]="startDate" [minDate]="" [maxDate]="endDate" (inputEvent)="startDate=$event"></app-datepicker>
+  </div>
+  <div class="item-date-last">
+      <app-datepicker [labelDate]="'End'" [myValue]="endDate" [minDate]="startDate" [maxDate]="endDate" (inputEvent)="endDate=$event"></app-datepicker>
+  </div>
+  
+  <div class="item-select-first">
+      <app-select [labelName] = "'Organizations'" [selectList] = "organizationList" [styleSelect]="" [reset]="resetCombos"
+                  (selectEvent)="selectedOrg=$event">
+      </app-select>
+  </div>
+  <div class="item-select-second">  
+      <app-select [labelName] = "'Groups'" [selectList] = "groupList" [styleSelect]="styleSelect" [reset]="resetCombos"
+                    (selectEvent)="selectedGroup=$event">
+      </app-select>
+  </div> 
+  <div class="item-select-last">    
+      <app-select [labelName] = "'Tags'" [selectList] = "tagList" [styleSelect]="" [reset]="resetCombos"
+                    (selectEvent)="selectedTag=$event">
+      </app-select>
+  </div>
+  <div class="item-button">
+      <!-- <label>{{selectedOrg}}</label>
+      <label>{{selectedGroup}}</label>
+      <label>{{selectedTag}}</label> -->
+      <button mat-raised-button color="primary" class="my-buttom-style" (click)="reset()">Clear</button>
+      <button mat-raised-button color="primary" class="my-buttom-style" (click)="search()">Search</button>
+  </div>
+  <div class="item-space">
+    <br>
+  </div>
+  <div class="item-divider">
+    <mat-divider class="my-divider-style" [inset]="true"></mat-divider>
+    <br>
+  </div>
+  
+  <div class="item-table-pag">
+    <mat-table [dataSource]="dataSource" class="lessons-table mat-elevation-z8">
+        
+        <ng-container matColumnDef="dataset">
+            <th mat-header-cell *matHeaderCellDef class="my-table-header-font"> Datasets </th>
+            <td mat-cell *matCellDef="let data"> 
+                <a [routerLink]="[data.datasetName]" (click)="goToDetail(data.datasetName)"> 
+                    <h5 class="font-weight-bold">{{data.title}} - {{data.datasetName}}</h5>
+                  </a>
+                <p class="grey-text">{{data.notes}}
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </mat-table>
+
+    <mat-paginator [length]="totalItems" 
+                  [pageSize]="10"
+                  [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+    </mat-paginator>
+
+    <br>
+  </div>
+
+</div>

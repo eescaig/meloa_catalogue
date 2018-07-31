@@ -10,7 +10,7 @@
       "prefix": "app",
       "schematics": {
         "@schematics/angular:component": {
-        "styleext": "scss",
+        "styleext": "css",
         "spec": false
        },
         "@schematics/angular:module": {
@@ -30,6 +30,11 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
             "assets": [
+              {
+                "glob": "**/*",
+                "input": "./node_modules/leaflet/dist/images",
+                "output": "leaflet/"
+              },
               "src/favicon.ico",
               "src/assets"
             ],
@@ -37,7 +42,8 @@
               "node_modules/font-awesome/scss/font-awesome.scss",
               "node_modules/angular-bootstrap-md/scss/bootstrap/bootstrap.scss",
               "node_modules/angular-bootstrap-md/scss/mdb-free.scss",
-              "src/styles.scss"
+              "src/styles.css",
+              "node_modules/leaflet/dist/leaflet.css"
             ],
             "scripts": [
               "node_modules/chart.js/dist/Chart.js",

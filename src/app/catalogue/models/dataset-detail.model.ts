@@ -20,6 +20,8 @@ export class DatasetDetail {
         public contact: string,
         public email: string,
         public creationTime: Date,
+        public startTime: Date,
+        public stopTime: Date,
         public topicCategory: string,
         public groups: string[],
         public tags: string[]
